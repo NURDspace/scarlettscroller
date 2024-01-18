@@ -277,6 +277,7 @@ void loop(void)
             last_activity = ms;
         }
 
+#if 0
         // show time when idle for a while
         if ((ms - last_activity) > 60000) {
             static time_t previous;
@@ -287,6 +288,11 @@ void loop(void)
                 draw_time(now);
             }
         }
+#else
+	long t_age = ms - last_activity;
+	if (t_age > 60000)
+		draw_fill((t_age / 1000) % 15);
+#endif
     }
 
     // parse command line
