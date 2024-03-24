@@ -18,7 +18,7 @@
 #define print Serial.printf
 #define UDP_PORT    8888
 
-#define MY_NTP_SERVER "nl.pool.ntp.org"
+#define MY_NTP_SERVER "time.lan.nurd.space"
 #define MY_TZ "CET-1CEST,M3.5.0/02,M10.5.0/03"
 
 static WiFiManager wifiManager;
@@ -248,6 +248,8 @@ void loop(void)
             if (draw_text(scroll_buf, scroll_pos, 255, 0) < 0) {
                 scroll_pos = LED_WIDTH;
                 scrolling--;
+		if (scrolling == 0)
+			draw_fill(0);
             } else {
                 scroll_pos--;
             }
@@ -260,7 +262,7 @@ void loop(void)
             if (len < sizeof(scroll_buf)) {
                 memcpy(scroll_buf, udpframe, len);
                 scroll_buf[len] = 0;
-                scrolling = 1;
+                scrolling = 3;
                 scroll_pos = LED_WIDTH;
             }
         }
@@ -290,8 +292,8 @@ void loop(void)
         }
 #else
 	long t_age = ms - last_activity;
-	if (t_age > 60000)
-		draw_fill((t_age / 1000) % 15);
+	if (t_age >= 5000)
+                draw_pixel(1, 1, (millis() & 512) ? 255 : 0);
 #endif
     }
 
